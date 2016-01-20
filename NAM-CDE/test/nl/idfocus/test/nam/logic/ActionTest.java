@@ -26,6 +26,7 @@ import nl.idfocus.nam.logic.action.ActionLength;
 import nl.idfocus.nam.logic.action.ActionLower;
 import nl.idfocus.nam.logic.action.ActionParser;
 import nl.idfocus.nam.logic.action.ActionReplace;
+import nl.idfocus.nam.logic.action.ActionSHA256;
 import nl.idfocus.nam.logic.action.ActionSplit;
 import nl.idfocus.nam.logic.action.ActionSubstring;
 import nl.idfocus.nam.logic.action.ActionSubstringAfter;
@@ -362,6 +363,20 @@ public class ActionTest
 			assertEquals( "Action type: ", true, action instanceof ActionFilter );
 			assertEquals( "Number of attributes: ", 1, parser.getRequiredData().numberOfAttributes() );
 			assertArrayEquals( "Filter result:", new String[]{"managerLocation1", "managerLocation2" }, action.perform(response) ); 
+		} catch (Exception e) {
+			fail("Exception: "+e.getMessage() );
+		}
+	}
+
+	@Test
+	public void BasicActionSha256Test() 
+	{
+		try {
+			ActionParser parser = new ActionParser("sha256( cn, 'mysaltvalue' )");
+			Action action = parser.getAction();
+			assertEquals( "Action type: ", true, action instanceof ActionSHA256 );
+			assertEquals( "Number of attributes: ", 1, parser.getRequiredData().numberOfAttributes() );
+			assertArrayEquals( "Sha256 result:", new String[]{ "mysaltvalue:467bf49e0ec2650cdf3ee4e00e5ebf9a13e9656e226ce7294851727d0fee28cd" }, action.perform(response) ); 
 		} catch (Exception e) {
 			fail("Exception: "+e.getMessage() );
 		}

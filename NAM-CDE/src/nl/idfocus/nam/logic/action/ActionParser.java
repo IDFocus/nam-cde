@@ -184,6 +184,12 @@ public class ActionParser
 				// Create new action for this and push()
 				stack.push( new ActionFilter() );
 			}
+			else if ( token.type == TokenType.SHA256 )
+			{
+				logger.log( dbglevel, "Found "+token.type.name() );
+				// Create new action for this and push()
+				stack.push( new ActionSHA256() );
+			}
 			else if ( token.type == TokenType.CLOSE )
 			{
 				logger.log( dbglevel, "Found "+token.type.name() );
@@ -357,6 +363,7 @@ public class ActionParser
 		SPLIT    ("SPLIT",    "split\\s*\\(",    11),
 		LENGTH   ("LENGTH",   "length\\s*\\(",   12),
 		FILTER   ("FILTER",   "filter\\s*\\(",   13),
+		SHA256   ("SHA256",   "sha256\\s*\\(",   14),
 		OPEN     ("OPEN",     "\\(",                  20),
 		QUOTE    ("QUOTE",    "'",                    21),
 		VALUE    ("VALUE",    "[^\\\\^\\s^(^)^,^']+", 22),
