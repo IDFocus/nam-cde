@@ -75,8 +75,7 @@ public class ConditionalData extends LocalAuthenticationClass
 	private final String DEFINESUSER = "DefinesUser";
 	private final String AUTHNREQ    = "AuthnRequest";
 	private final String SYSTEM      = "SystemAccess";
-	private final String lastChangedRevision = "$LastChangedRevision: 54 $";
-	private final String revision;
+	private final String revision    = "55";
 	private LDAPCache lcache;
 	private final boolean debugmode;
 	private final boolean definesUser;
@@ -94,7 +93,6 @@ public class ConditionalData extends LocalAuthenticationClass
 	public ConditionalData( Properties props, ArrayList<UserAuthority> stores )
 	{
 		super( props, stores );
-		this.revision = lastChangedRevision.substring( lastChangedRevision.indexOf(":")+1, lastChangedRevision.lastIndexOf("$") ).trim();
 		logger.log( loglevel, "ConditionalData Authentication Class rev "+revision+" (c) IDFocus B.V. <info@idfocus.nl>" );
 	    long start = System.nanoTime();
 		this.debugmode = Boolean.parseBoolean( props.getProperty( DEBUG ) );
@@ -103,7 +101,7 @@ public class ConditionalData extends LocalAuthenticationClass
 			for ( Handler hd : logger.getHandlers() )
 				hd.setLevel( dbglevel );
 			logger.setLevel( dbglevel );
-			logger.log( dbglevel, "$Id: ConditionalData.java 54 2015-12-18 22:01:06Z mvreijn $" );
+			logger.log( dbglevel, "$Id$" );
 		}
 		// 
 	    StringBuilder keyHash = new StringBuilder();

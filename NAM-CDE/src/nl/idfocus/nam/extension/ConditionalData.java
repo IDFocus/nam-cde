@@ -50,8 +50,7 @@ public class ConditionalData implements NxpeContextDataElement
 	private final String strName;
 	private final int iEnumerativeValue;
 	private final String strParameter;
-	private final String lastChangedRevision = "$LastChangedRevision: 53 $";
-	private final String revision;
+	private final String revision = "55";
 
 	// Constants
 	private static final String DEFAULT_AUTHENTICATION = "simple";
@@ -87,9 +86,9 @@ public class ConditionalData implements NxpeContextDataElement
 
 	public ConditionalData( String strName, int iEnumerativeValue, String strParameter ) throws NxpeException
 	{
-		logger.log( loglevel, "$Id: ConditionalData.java 53 2015-12-18 21:30:15Z mvreijn $" );
+		logger.log( loglevel, "ConditionalData Extension rev "+revision+" (c) IDFocus B.V. <info@idfocus.nl>" );
+		logger.log( dbglevel, "$Id$" );
 
-		this.revision = lastChangedRevision.substring( lastChangedRevision.indexOf(":"), lastChangedRevision.lastIndexOf("$") );
 		this.strName = strName;
 		this.iEnumerativeValue = iEnumerativeValue;
 		this.strParameter = strParameter;
