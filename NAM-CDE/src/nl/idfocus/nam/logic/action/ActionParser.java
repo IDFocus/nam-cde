@@ -274,6 +274,11 @@ public class ActionParser
 						this.requiredData.addAttribute( token.value );
 					}
 				}
+				else
+				{
+					stack.push(new ActionAttribute(token.value));
+					this.requiredData.addAttribute( token.value );
+				}
 			}
 			else if ( token.type == TokenType.ESC )
 			{

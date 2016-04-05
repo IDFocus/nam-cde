@@ -243,4 +243,31 @@ public class BusinessRuleTest
 		}
 	}
 
+	@Test
+	public void SeppoRuleTest1()
+	{
+		try
+		{
+			BusinessRule testRule = new BusinessRule("RULE_10", "condition: \"( ULCNuserClass = 'staff')\", action: \"( preferredName )\", destination: \"CDEfirstName\"");
+			assertEquals( "Rule not parsed correctly", true, testRule.isValid() );
+			assertEquals( "Destination not parsed correctly", "CDEfirstName", testRule.getDestination() );
+			assertEquals( 2, testRule.requires().numberOfAttributes() );
+		} catch (Exception e) {
+			fail( e.getClass().getName() + ": " + e.getMessage() );
+		}
+	}
+
+	@Test
+	public void SeppoRuleTest2()
+	{
+		try
+		{
+			BusinessRule testRule = new BusinessRule("RULE_10", "condition: \"( ULCNuserClass = 'staff')\", action: \"(preferredName)\", destination: \"CDEfirstName\"");
+			assertEquals( "Rule not parsed correctly", true, testRule.isValid() );
+			assertEquals( "Destination not parsed correctly", "CDEfirstName", testRule.getDestination() );
+			assertEquals( 2, testRule.requires().numberOfAttributes() );
+		} catch (Exception e) {
+			fail( e.getClass().getName() + ": " + e.getMessage() );
+		}
+	}
 }
