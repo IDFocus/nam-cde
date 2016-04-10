@@ -33,6 +33,8 @@ public class TestData
 		primaryAttrs.put( "sn", "myLastname" );
 		primaryAttrs.put( "givenname", "myFirstname" );
 		primaryAttrs.put( "manager", "cn=myManager" );
+		primaryAttrs.put( "ULCNuserOrgLevel2", "12345#Level2" );
+		primaryAttrs.put( "ULCNp1", "12345" );
 		Attribute groups = new BasicAttribute( "memberof" );
 		groups.add( "cn=group1" );
 		groups.add( "cn=group2" );		

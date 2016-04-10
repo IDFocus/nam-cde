@@ -39,7 +39,7 @@ public class ActionSubstringBefore implements Action
 		}
 		else if ( this.actions.size() < 2 )
 		{
-			if ( action instanceof ActionLiteral || action instanceof ActionLength )
+			if (! ( action instanceof ActionSplit || action instanceof ActionLength ) )
 				this.actions.add( action );
 			else
 				throw new ActionException( "Substring-before: invalid arguments" );
@@ -68,27 +68,6 @@ public class ActionSubstringBefore implements Action
 					}
 					catch ( NullPointerException e ) {}
 					catch ( IndexOutOfBoundsException e ) {}
-				}
-			}
-			else
-			{
-				return source;
-			}
-		}
-		else if ( this.actions.size() == 2 )
-		{
-			String[] source = this.actions.get(0).perform(attrs);
-			String[] start  = this.actions.get(1).perform(attrs);
-			if ( start.length == 1 )
-			{
-				for ( String value : source )
-				{
-					try
-					{
-						values.add( value.substring( Integer.parseInt( start[0] ) ) );
-					}
-					catch ( NullPointerException e ) {}
-					catch ( NumberFormatException e ) {}
 				}
 			}
 			else

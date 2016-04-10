@@ -137,6 +137,10 @@ public class ConditionParser
 			{
 				inDnLookup = true;
 			}
+			else if ( token.type == TokenType.LENGTH )
+			{
+				// TODO	
+			}
 			else if ( token.type == TokenType.CLOSE )
 			{
 				// Double pop when in implicit expression
@@ -343,18 +347,19 @@ public class ConditionParser
 		OR       ("OR",        "or\\s*\\(",   2),
 		NOT      ("NOT",       "not\\s*\\(",  3),
 		IF       ("IF",        "if\\s*\\(",   4),
-		DNLOOKUP ("DN",        "dn\\s*\\(",   5),
-		REGEX	 ("REGEX",     "regex\\s*\\(",6),
-		OPEN     ("OPEN",      "\\(",         7),
-		EQUALITY ("EQUALITY",  "[<>=~]{1,2}", 8),
-		QUOTE    ("QUOTE",     "'",           9),
-		VALUE    ("VALUE",     "[^\\\\^\\s^(^)^'^=^,^<^>^~]+", 10),
-		CARET	 ("CARET",	   "\\^",  15),
-		CLOSE    ("CLOSE",     "\\)",  11),
-		SEPARATOR("SEPARATOR", ",",    12),
-		SPACE    ("SPACE",     "\\s+", 13),
-		ESC      ("ESC",       "\\\\", 14),
-//		VALUE    ("VALUE",     "[^,^\\s]+", 10),
+		LENGTH	 ("LENGTH",    "length\\s*\\(",5),
+		DNLOOKUP ("DN",        "dn\\s*\\(",   6),
+		REGEX	 ("REGEX",     "regex\\s*\\(",7),
+		OPEN     ("OPEN",      "\\(",         20),
+		EQUALITY ("EQUALITY",  "[<>=~]{1,2}", 21),
+		QUOTE    ("QUOTE",     "'",           22),
+		VALUE    ("VALUE",     "[^\\\\^\\s^(^)^'^=^,^<^>^~]+", 23),
+		CARET	 ("CARET",	   "\\^",  24),
+		CLOSE    ("CLOSE",     "\\)",  25),
+		SEPARATOR("SEPARATOR", ",",    26),
+		SPACE    ("SPACE",     "\\s+", 27),
+		ESC      ("ESC",       "\\\\", 28),
+//		VALUE    ("VALUE",     "[^,^\\s]+", 23),
 		;
 
 		public final String name;

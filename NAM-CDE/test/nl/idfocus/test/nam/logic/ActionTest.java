@@ -142,6 +142,20 @@ public class ActionTest
 	}
 
 	@Test
+	public void CompoundActionSubstringAfterTest() 
+	{
+		try {
+			ActionParser parser = new ActionParser("substring-after( ULCNuserOrgLevel2, concat( ULCNp1, '#' ) )");
+			Action action = parser.getAction();
+			assertEquals( "Action type: ", true, action instanceof ActionSubstringAfter );
+			assertEquals( "Number of attributes: ", 2, parser.getRequiredData().numberOfAttributes() );
+			assertEquals( "Concat result: ", "Level2", action.perform(response)[0] );
+		} catch (Exception e) {
+			fail("Exception: "+e.getMessage() );
+		}
+	}
+
+	@Test
 	public void BasicActionSubstringBeforeTest() 
 	{
 		try {
