@@ -64,7 +64,9 @@ public class ActionSubstringBefore implements Action
 				{
 					try
 					{
-						values.add( value.substring( 0, value.indexOf( end[0] ) ) );
+						int position = value.indexOf( end[0] );
+						if( position > -1 )
+							values.add( value.substring( 0, position ) );
 					}
 					catch ( NullPointerException e ) {}
 					catch ( IndexOutOfBoundsException e ) {}

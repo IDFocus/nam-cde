@@ -33,15 +33,18 @@ public class TestData
 		primaryAttrs.put( "sn", "myLastname" );
 		primaryAttrs.put( "givenname", "myFirstname" );
 		primaryAttrs.put( "manager", "cn=myManager" );
-		primaryAttrs.put( "ULCNuserOrgLevel2", "12345#Level2" );
-		primaryAttrs.put( "ULCNp1", "12345" );
+		Attribute orglevel = new BasicAttribute( "ULCNuserOrgLevel2" );
+		orglevel.add("20008177#50001469");
+		orglevel.add("20008178#50001830");
+		primaryAttrs.put(orglevel);
+		primaryAttrs.put( "ULCNp1", "20008177" );
 		Attribute groups = new BasicAttribute( "memberof" );
 		groups.add( "cn=group1" );
 		groups.add( "cn=group2" );		
 		primaryAttrs.put( groups );
 		return primaryAttrs;
 	}
-	
+
 	static Attributes getManagerAttributes()
 	{
 		Attributes secondaryAttrs = new BasicAttributes();
