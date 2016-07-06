@@ -263,72 +263,79 @@ public class ConditionalData extends LocalAuthenticationClass
 
 		// Get Principal.
 		local_Principal = resolveUserPrincipal();
-
-		// Get required data
-		DataResponse userData = getRequiredData( ruleSet.getRequires() );
-		
-		// Collect debug data
-		DebugData data = new DebugData();
-
-		// Now process all rules
-		for ( BusinessRule rule : ruleSet.getRules() )
+		if ( local_Principal != null )
 		{
-			logger.log( dbglevel, String.format( "Processing rule %s with data requirement: \n%s", rule.getName(), rule.requires() ) );
-			if ( debugmode )
-				data.addRule( rule.getName(), rule.toString() );
-			if ( rule.applies( userData ) )
+	
+			// Get required data
+			DataResponse userData = getRequiredData( ruleSet.getRequires() );
+			
+			// Collect debug data
+			DebugData data = new DebugData();
+	
+			// Now process all rules
+			for ( BusinessRule rule : ruleSet.getRules() )
 			{
-				logger.log( dbglevel, "Rule applies" );
-				// Do our stuff here
-				String[] result = rule.getResult( userData );
-				logger.log( dbglevel, String.format( "Storing rule result as %s with content %s.", rule.getDestination(), Arrays.toString(result) ) );
-				if ( result.length == 1 )
-					lcache.setValue( rule.getDestination(), result[0] );
-				else
-					lcache.setValue( rule.getDestination(), result );
+				logger.log( dbglevel, String.format( "Processing rule %s with data requirement: \n%s", rule.getName(), rule.requires() ) );
 				if ( debugmode )
+					data.addRule( rule.getName(), rule.toString() );
+				if ( rule.applies( userData ) )
 				{
-					data.setApplies( rule.getName() , true );
-					data.setResult( rule.getName(), result );
+					logger.log( dbglevel, "Rule applies" );
+					// Do our stuff here
+					String[] result = rule.getResult( userData );
+					logger.log( dbglevel, String.format( "Storing rule result as %s with content %s.", rule.getDestination(), Arrays.toString(result) ) );
+					if ( result.length == 1 )
+						lcache.setValue( rule.getDestination(), result[0] );
+					else
+						lcache.setValue( rule.getDestination(), result );
+					if ( debugmode )
+					{
+						data.setApplies( rule.getName() , true );
+						data.setResult( rule.getName(), result );
+					}
+					// Update the dataresponse with the new attribute
+					updateRequiredData( ruleSet.getRequires(), userData, rule, result );
 				}
-				// Update the dataresponse with the new attribute
-				updateRequiredData( ruleSet.getRequires(), userData, rule, result );
+				else
+				{
+					if ( debugmode )
+						data.setApplies( rule.getName() , false );
+				}
 			}
+			/* 
+			 * If the class does not define the user, use the old cache set method which stopped working in NAM 4.1
+			 * Otherwise, add cache entries to the credentials and set the principal.
+			 */
+			if ( definesUser )
+			{
+				lcache.persist( m_Credentials );
+				setPrincipal(local_Principal);
+			} 
 			else
 			{
-				if ( debugmode )
-					data.setApplies( rule.getName() , false );
+				lcache.persist();
+			}
+			// We're done processing.
+			long next = System.nanoTime();
+			logger.log( loglevel, String.format("Processed ruleset in %s millis.", ((next - start)/1000000L)) );
+			// Check debug setting
+			if ( isFirstCallAfterPrevMethod() && debugmode )
+			{
+				// Show the DEFAULTJSP with all rules and data
+				data.setRequired( ruleSet.getRequires() );
+				data.setRetrieved( userData );
+				// prepare the actual DEFAULTJSP page
+				m_PageToShow = new PageToShow( DEFAULTJSP );
+				m_PageToShow.addAttribute( NIDPConstants.ATTR_URL, ( getReturnURL() != null ? getReturnURL() : m_Request.getRequestURL().toString() ) );
+				m_PageToShow.addAttribute( DebugData.DEBUG_TAG, data );
+				
+				logger.log( loglevel, "Conditional Data showing DEBUG page.");
+				return SHOW_JSP;
 			}
 		}
-		/* 
-		 * If the class does not define the user, use the old cache set method which stopped working in NAM 4.1
-		 * Otherwise, add cache entries to the credentials and set the principal.
-		 */
-		if ( definesUser )
-		{
-			lcache.persist( m_Credentials );
-			setPrincipal(local_Principal);
-		} 
 		else
 		{
-			lcache.persist();
-		}
-		// We're done processing.
-		long next = System.nanoTime();
-		logger.log( loglevel, String.format("Processed ruleset in %s millis.", ((next - start)/1000000L)) );
-		// Check debug setting
-		if ( isFirstCallAfterPrevMethod() && debugmode )
-		{
-			// Show the DEFAULTJSP with all rules and data
-			data.setRequired( ruleSet.getRequires() );
-			data.setRetrieved( userData );
-			// prepare the actual DEFAULTJSP page
-			m_PageToShow = new PageToShow( DEFAULTJSP );
-			m_PageToShow.addAttribute( NIDPConstants.ATTR_URL, ( getReturnURL() != null ? getReturnURL() : m_Request.getRequestURL().toString() ) );
-			m_PageToShow.addAttribute( DebugData.DEBUG_TAG, data );
-			
-			logger.log( loglevel, "Conditional Data showing DEBUG page.");
-			return SHOW_JSP;
+			logger.log( loglevel, "Conditional Data did not find a security Principal (not authenticated yet?).");			
 		}
 		logger.log( loglevel, "Conditional Data done.");
 		return AUTHENTICATED;

@@ -75,7 +75,6 @@ public class ConditionalData implements NxpeContextDataElement
 	// Parameter default values
 	private String ldapServer;
 	private String ldapAuthentication;
-	//private String servicesAttribute;
 	private SearchControls searchControls;
 
 	private final List<BusinessRule> ruleSet;
@@ -92,7 +91,7 @@ public class ConditionalData implements NxpeContextDataElement
 		this.strName = strName;
 		this.iEnumerativeValue = iEnumerativeValue;
 		this.strParameter = strParameter;
-		this.ruleSet = new ArrayList<BusinessRule>();
+		this.ruleSet = new ArrayList<>();
 	}
 
 	/**
@@ -101,7 +100,7 @@ public class ConditionalData implements NxpeContextDataElement
 	@Override
 	public int getEnumerativeValue()
 	{
-		return (iEnumerativeValue);
+		return iEnumerativeValue;
 	}
 
 	/**
@@ -110,7 +109,7 @@ public class ConditionalData implements NxpeContextDataElement
 	@Override
 	public String getName()
 	{
-		return (strName);
+		return strName;
 	}
 
 	/**
@@ -119,7 +118,7 @@ public class ConditionalData implements NxpeContextDataElement
 	@Override
 	public String getParameter()
 	{
-		return (strParameter);
+		return strParameter;
 	}
 
 	@Override
@@ -137,8 +136,7 @@ public class ConditionalData implements NxpeContextDataElement
 				try {
 					ruleSet.add( new BusinessRule( param.getName() , param.getValue() ) );
 				} catch (Exception e) {
-					logger.log( loglevel, e.getClass().getName()+" adding rule "+param.getEnumerativeValue()+": "+e.getMessage() );
-					e.printStackTrace();
+					logger.log( loglevel, e.getClass().getName()+" adding rule "+param.getEnumerativeValue()+": "+e.getMessage(), e );
 				}
 			}
 		}
@@ -181,7 +179,7 @@ public class ConditionalData implements NxpeContextDataElement
 		DataResponse attrs = getRequiredData( strLDAPUserDN, strPassword, required );
 		// Apply rules, return all data
 		// TODO find out which return types are supported
-		List<String> results = new ArrayList<String>();		
+		List<String> results = new ArrayList<>();		
 		for ( BusinessRule rule : ruleSet )
 		{
 			logger.log( dbglevel, " ## evaluating rule: "+rule.getName()+" ##");
@@ -194,7 +192,7 @@ public class ConditionalData implements NxpeContextDataElement
 		}
 		logger.log( loglevel, "Rule returned "+results.size()+" value" + (results.size()==1 ? "." : "s.") );
 		// TODO think about the best way to do this
-		return results.size() > 0 ? results.get(0) : "";
+		return results.isEmpty() ? results.get(0) : "";
 	}
 
 	/**
@@ -276,7 +274,7 @@ public class ConditionalData implements NxpeContextDataElement
 		catch (NamingException e)
 		{
 			logger.log( loglevel, "NamingException: " + e.getExplanation() );
-			throw (new NxpeException(NxpeResult.ErrorDataUnavailable, e));
+			throw new NxpeException(NxpeResult.ErrorDataUnavailable, e);
 		}
 		finally
 		{
@@ -289,7 +287,7 @@ public class ConditionalData implements NxpeContextDataElement
 				}
 				catch (NamingException e)
 				{
-					logger.log( dbglevel, "NamingException: "+e.getExplanation() );
+					logger.log( dbglevel, "NamingException: "+e.getExplanation(), e );
 				}
 			}
 		}
@@ -312,7 +310,7 @@ public class ConditionalData implements NxpeContextDataElement
 	 */
 	private LdapContext getLdapConnection(String principal, String credentials ) throws NamingException
 	{
-		Hashtable<String, String> environment = new Hashtable<String, String>();
+		Hashtable<String, String> environment = new Hashtable<>();
 		LdapContext ldapContext;
 
 		environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -332,7 +330,7 @@ public class ConditionalData implements NxpeContextDataElement
 
 		ldapContext = new InitialLdapContext(environment, (Control[]) null);
 
-		return (ldapContext);
+		return ldapContext;
 
 	}
 

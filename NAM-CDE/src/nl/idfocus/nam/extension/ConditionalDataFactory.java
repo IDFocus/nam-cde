@@ -44,7 +44,7 @@ public class ConditionalDataFactory implements NxpeContextDataElementFactory
 	public NxpeContextDataElement getInstance( String strName, int iEnumerativeValue, String strParameter) throws NxpeException
 	{
 		logger.info("Getting instance of ConditionalData...");
-		return ( new ConditionalData(strName, iEnumerativeValue, strParameter) );
+		return new ConditionalData(strName, iEnumerativeValue, strParameter);
 	}
 
 }
