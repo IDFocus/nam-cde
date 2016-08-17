@@ -194,6 +194,70 @@ public class BusinessRuleTest
 	}
 
 	@Test
+	public void CAKRuleOneTest()
+	{
+		try
+		{
+			BusinessRule testRule = new BusinessRule( "RULE_7", "condition: \"( cakInternal = 'true' )\", action: \"concat( 'medewerker' )\"" );
+			assertEquals( "Rule should be valid", true, testRule.isValid() );
+			assertEquals( "Rule should not yet apply", false, testRule.applies(response) );
+			response.addAttribute(TestData.getCAKEmployee());
+			assertEquals( "Rule should apply", true, testRule.applies(response) );
+			assertEquals( new String[]{ "medewerker" }, testRule.getResult(null) );
+		} catch (Exception e) {
+			fail( e.getMessage() );
+		}
+	}
+
+	@Test
+	public void CAKRuleTwoTest()
+	{
+		try
+		{
+			BusinessRule testRule = new BusinessRule( "RULE_8", "condition: \"( cakInternal = 'false' )\", action: \"concat( 'ketenpartner' )\"" );
+			assertEquals( "Rule should be valid", true, testRule.isValid() );
+			assertEquals( "Rule should not yet apply", false, testRule.applies(response) );
+			response.addAttribute(TestData.getCAKPartner());
+			assertEquals( "Rule should apply", true, testRule.applies(response) );
+			assertEquals( new String[]{ "ketenpartner" }, testRule.getResult(null) );
+		} catch (Exception e) {
+			fail( e.getMessage() );
+		}
+	}
+
+	@Test
+	public void CAKRuleThreeTest()
+	{
+		try
+		{
+			BusinessRule testRule = new BusinessRule( "RULE_9", "condition: \"or( not( ( cakInternal = 'true' ) ) not( ( cakInternal = 'false' ) ) )\", action: \"concat( 'klant' )\"" );
+			assertEquals( "Rule should be valid", true, testRule.isValid() );
+			assertEquals( "Rule should apply", true, testRule.applies(response) );
+			response.addAttribute(TestData.getCAKPartner());
+			assertEquals( "Rule should not apply", true, testRule.applies(response) );
+			assertEquals( new String[]{ "klant" }, testRule.getResult(null) );
+		} catch (Exception e) {
+			fail( e.getMessage() );
+		}
+	}
+
+	@Test
+	public void CAKRuleFourTest()
+	{
+		try
+		{
+			BusinessRule testRule = new BusinessRule( "RULE_10", "condition: \"not( regex( cakInternal, '.+' ) )\", action: \"concat( 'klant' )\"" );
+			assertEquals( "Rule should be valid", true, testRule.isValid() );
+			assertEquals( "Rule should apply", true, testRule.applies(new DataResponse()) );
+			response.addAttribute(TestData.getCAKPartner());
+			assertEquals( "Rule should not apply", false, testRule.applies(response) );
+			assertEquals( new String[]{ "klant" }, testRule.getResult(null) );
+		} catch (Exception e) {
+			fail( e.getMessage() );
+		}
+	}
+
+	@Test
 	public void FredrikRuleTest()
 	{
 		try

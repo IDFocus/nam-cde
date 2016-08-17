@@ -50,22 +50,19 @@ public class ConditionalData implements NxpeContextDataElement
 	private final String strName;
 	private final int iEnumerativeValue;
 	private final String strParameter;
-	private final String revision = "55";
+	private final String revision = "56";
 
 	// Constants
 	private static final String DEFAULT_AUTHENTICATION = "simple";
 
 	// Parameter IDs
-	private static final int FIELD_SERVER_ID = 10;
+	private static final int FIELD_DEBUG_ID = 1;
+	private static final int FIELD_LDAP_SERVER_ID = 10;
+	private static final int FIELD_IGNORE_LDAPERR_ID = 11;
 	private static final int FIELD_USER_DN_ID = 20;
 	private static final int FIELD_USER_PASS_ID = 21;
 	private static final int FIELD_FIRST_RULE = 30;
 	private static final int FIELD_LAST_RULE = 99;
-
-	// Parameters names (not used in this class)
-	public static final String FIELD_SERVER_DESC = "User Store Replica";
-	public static final String FIELD_USER_DN_DESC = "LDAP User DN";
-	public static final String FIELD_USER_PASS_DESC = "LDAP User Password";
 
 	// Parameter default values
 	private static final String FIELD_SERVER_DEFAULT = "ldap://localhost:389";
@@ -76,6 +73,8 @@ public class ConditionalData implements NxpeContextDataElement
 	private String ldapServer;
 	private String ldapAuthentication;
 	private SearchControls searchControls;
+	private boolean ignoreInvalidLdapHost;
+	private boolean debugMode;
 
 	private final List<BusinessRule> ruleSet;
 
@@ -86,11 +85,11 @@ public class ConditionalData implements NxpeContextDataElement
 	public ConditionalData( String strName, int iEnumerativeValue, String strParameter ) throws NxpeException
 	{
 		logger.log( loglevel, "ConditionalData Extension rev "+revision+" (c) IDFocus B.V. <info@idfocus.nl>" );
-		logger.log( dbglevel, "$Id$" );
 
 		this.strName = strName;
 		this.iEnumerativeValue = iEnumerativeValue;
 		this.strParameter = strParameter;
+		this.ignoreInvalidLdapHost = false;
 		this.ruleSet = new ArrayList<>();
 	}
 
@@ -130,7 +129,7 @@ public class ConditionalData implements NxpeContextDataElement
 		while ( itr.hasNext() )
 		{
 			NxpeParameter param = itr.next();
-			logger.log( dbglevel, "Parameter: " + param.getName() + " id: " + param.getEnumerativeValue() + " value: " + param.getValue() );
+			logger.log( loglevel, "Parameter: " + param.getName() + " id: " + param.getEnumerativeValue() + " value: " + param.getValue() );
 			if ( param.getEnumerativeValue() >= FIELD_FIRST_RULE && param.getEnumerativeValue() <= FIELD_LAST_RULE )
 			{
 				try {
@@ -139,7 +138,18 @@ public class ConditionalData implements NxpeContextDataElement
 					logger.log( loglevel, e.getClass().getName()+" adding rule "+param.getEnumerativeValue()+": "+e.getMessage(), e );
 				}
 			}
+			else if ( param.getEnumerativeValue() == FIELD_DEBUG_ID )
+			{
+				this.debugMode = Boolean.parseBoolean( param.getValue() );
+			}
+			else if ( param.getEnumerativeValue() == FIELD_IGNORE_LDAPERR_ID )
+			{
+				this.ignoreInvalidLdapHost = Boolean.parseBoolean( param.getValue() );
+			}
 		}
+
+		if ( debugMode )
+			dbglevel = Level.INFO;
 
 		ldapServer = FIELD_SERVER_DEFAULT;
 		ldapAuthentication = DEFAULT_AUTHENTICATION;
@@ -162,7 +172,7 @@ public class ConditionalData implements NxpeContextDataElement
 		String strLDAPUserDN = getProperty( informationCtx, FIELD_USER_DN_ID, null );
 
 		logger.log( dbglevel, "Calling setProviderURL");
-		ldapServer = getProperty( informationCtx, FIELD_SERVER_ID, FIELD_SERVER_DEFAULT );
+		ldapServer = getProperty( informationCtx, FIELD_LDAP_SERVER_ID, FIELD_SERVER_DEFAULT );
 
 		logger.log( dbglevel, "Calling getLdapPassword");
 		String strPassword = getProperty( informationCtx, FIELD_USER_PASS_ID, null );
@@ -192,7 +202,7 @@ public class ConditionalData implements NxpeContextDataElement
 		}
 		logger.log( loglevel, "Rule returned "+results.size()+" value" + (results.size()==1 ? "." : "s.") );
 		// TODO think about the best way to do this
-		return results.isEmpty() ? results.get(0) : "";
+		return results.isEmpty() ? "" : results.get(0);
 	}
 
 	/**
@@ -273,8 +283,9 @@ public class ConditionalData implements NxpeContextDataElement
 		}
 		catch (NamingException e)
 		{
-			logger.log( loglevel, "NamingException: " + e.getExplanation() );
-			throw new NxpeException(NxpeResult.ErrorDataUnavailable, e);
+			logger.log( loglevel, "NamingException retrieving attributes: " + e.getExplanation() );
+			if( !ignoreInvalidLdapHost )
+				throw new NxpeException(NxpeResult.ErrorDataUnavailable, e);
 		}
 		finally
 		{
@@ -283,11 +294,10 @@ public class ConditionalData implements NxpeContextDataElement
 				try
 				{
 					ldapContext.close();
-
 				}
 				catch (NamingException e)
 				{
-					logger.log( dbglevel, "NamingException: "+e.getExplanation(), e );
+					logger.log( dbglevel, "NamingException clsoing connection: "+e.getExplanation(), e );
 				}
 			}
 		}

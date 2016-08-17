@@ -75,7 +75,7 @@ public class ConditionalData extends LocalAuthenticationClass
 	private final String DEFINESUSER = "DefinesUser";
 	private final String AUTHNREQ    = "AuthnRequest";
 	private final String SYSTEM      = "SystemAccess";
-	private final String revision    = "55";
+	private final String revision    = "56";
 	private LDAPCache lcache;
 	private final boolean debugmode;
 	private final boolean definesUser;
