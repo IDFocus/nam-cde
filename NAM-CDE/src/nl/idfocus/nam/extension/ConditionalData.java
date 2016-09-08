@@ -131,6 +131,8 @@ public class ConditionalData implements NxpeContextDataElement
 	@Override
 	public void initialize(NxpeParameterList params) throws NxpeException
 	{
+		if ( params == null )
+			throw new NxpeException("No parameters received upon initialization");
 		this.configurationValues = params;
 		// Read setup properties
 		Iterator<NxpeParameter> itr = params.iterator();

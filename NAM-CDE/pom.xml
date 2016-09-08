@@ -11,6 +11,7 @@
 		<junit.version>4.11</junit.version>
 		<wiremock.version>1.58</wiremock.version>
 		<nam.version>4.2.1</nam.version>
+		<servlet.version>3.1.0</servlet.version>
 		<mvn.compiler.version>3.5.1</mvn.compiler.version>
 	</properties>
 	<build>
@@ -48,13 +49,19 @@
 			<version>4.0.1</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Test dependencies -->
 		<dependency>
 			<groupId>com.novell.nam</groupId>
 			<artifactId>common</artifactId>
 			<version>${nam.version}</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
