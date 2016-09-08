@@ -51,8 +51,9 @@ import com.novell.nidp.common.authority.UserAuthority;
 import com.novell.nidp.liberty.idff.protocol.LibertyAuthnRequest;
 
 /**
+ * Custom Authentication Class for NetIQ Access Manager IDPs
  * @author IDFocus B.V. (mvreijn@idfocus.nl)
- * @version Tested on NetIQ Access Manager 4.0.x and 4.1.x
+ * @version Tested on NetIQ Access Manager 4.0.x to 4.2.x
  */
 public class ConditionalData extends LocalAuthenticationClass
 {
@@ -75,7 +76,8 @@ public class ConditionalData extends LocalAuthenticationClass
 	private final String DEFINESUSER = "DefinesUser";
 	private final String AUTHNREQ    = "AuthnRequest";
 	private final String SYSTEM      = "SystemAccess";
-	private final String revision    = "55";
+	private final String version     = ConditionalData.class.getPackage().getImplementationVersion();
+
 	private LDAPCache lcache;
 	private final boolean debugmode;
 	private final boolean definesUser;
@@ -93,7 +95,7 @@ public class ConditionalData extends LocalAuthenticationClass
 	public ConditionalData( Properties props, ArrayList<UserAuthority> stores )
 	{
 		super( props, stores );
-		logger.log( loglevel, "ConditionalData Authentication Class rev "+revision+" (c) IDFocus B.V. <info@idfocus.nl>" );
+		logger.log( loglevel, "ConditionalData Authentication Class "+version+" (c) IDFocus B.V. <info@idfocus.nl>" );
 	    long start = System.nanoTime();
 		this.debugmode = Boolean.parseBoolean( props.getProperty( DEBUG ) );
 		if ( debugmode )

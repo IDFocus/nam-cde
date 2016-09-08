@@ -45,6 +45,16 @@ public class TestData
 		return primaryAttrs;
 	}
 
+	static Attribute getCAKEmployee()
+	{
+		return new BasicAttribute( "cakInternal", "true");
+	}
+	
+	static Attribute getCAKPartner()
+	{
+		return new BasicAttribute( "cakInternal", "false");
+	}
+	
 	static Attributes getManagerAttributes()
 	{
 		Attributes secondaryAttrs = new BasicAttributes();

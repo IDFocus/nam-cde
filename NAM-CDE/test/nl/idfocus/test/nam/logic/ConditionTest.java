@@ -279,6 +279,21 @@ public class ConditionTest
 	{
 		try
 		{
+			ConditionParser parser = new ConditionParser( "regex( cn, '^my.+$' )" );
+			Condition cond = parser.getCondition();
+			assertEquals( "Condition type: ", true, cond instanceof ConditionRegex );
+			assertEquals( "Number of attributes:", 1, parser.getAttributes().numberOfAttributes() );
+			assertEquals( "Condition result:", true, cond.evaluate(response) );
+		} catch (Exception e) {
+			fail("Exception: "+e.getMessage() );
+		}
+	}
+
+	@Test
+	public void DoubleRegexConditionTest() 
+	{
+		try
+		{
 			ConditionParser parser = new ConditionParser( "regex( cn, '^my.+$', '.+User.*' )" );
 			Condition cond = parser.getCondition();
 			assertEquals( "Condition type: ", true, cond instanceof ConditionRegex );

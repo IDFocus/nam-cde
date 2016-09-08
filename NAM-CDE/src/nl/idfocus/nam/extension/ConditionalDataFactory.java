@@ -26,7 +26,7 @@ public class ConditionalDataFactory implements NxpeContextDataElementFactory
 	private static Logger logger = Logger.getLogger( ConditionalDataFactory.class.getName() );
 
 	/**
-	 *
+	 * Empty constructor to allow us to see when the factory object is created.
 	 */
 	public ConditionalDataFactory()
 	{
@@ -38,9 +38,14 @@ public class ConditionalDataFactory implements NxpeContextDataElementFactory
 	 *
 	 * Notes: This method is initiated for each condition as defined in the
 	 * policy type specification
-	 *
+	 * 
+	 * @param strName
+	 * @param iEnumerativeValue
+	 * @param strParameter
 	 * @throws NxpeException
+	 * @return
 	 */
+	@Override
 	public NxpeContextDataElement getInstance( String strName, int iEnumerativeValue, String strParameter) throws NxpeException
 	{
 		logger.info("Getting instance of ConditionalData...");
