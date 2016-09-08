@@ -14,18 +14,30 @@
  */
 package nl.idfocus.test.nam.logic;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.novell.nidp.policy.attribute.ExternalAttributeInformationContext;
+import com.novell.nxpe.NxpeContextDataElement;
+import com.novell.nxpe.NxpeException;
 import com.novell.nxpe.NxpeInformationContext;
+import com.novell.nxpe.NxpeInformationData;
+import com.novell.nxpe.NxpeInformationKey;
+import com.novell.nxpe.NxpeInformationMap;
 import com.novell.nxpe.NxpeParameterList;
 import com.novell.nxpe.NxpeResponseContext;
 
+import nl.idfocus.nam.extension.ConditionalData;
+import nl.idfocus.nam.extension.ConditionalDataFactory;
+
 public class ExtensionTest 
 {
+	ExternalAttributeInformationContext	infoctx;
+
 	private NxpeParameterList params;
 	private NxpeInformationContext context;
 	private NxpeResponseContext response;
@@ -34,6 +46,7 @@ public class ExtensionTest
 	public void setUp() throws Exception 
 	{
 		params = null;
+		infoctx = getInformationContext();
 	}
 
 	@After
@@ -41,8 +54,75 @@ public class ExtensionTest
 	}
 
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void testExtensionFactory() {
+		try
+		{
+			NxpeContextDataElement lookup = new ConditionalDataFactory().getInstance("name", 0, "param");
+			assertEquals(ConditionalData.class.getName(), lookup.getClass().getName());
+		}
+		catch (NxpeException e)
+		{
+			fail("Exception: " + e.getMessage());
+		}
+	}
+
+	@Test
+	public void testInitializeFail()
+	{
+		try
+		{
+			NxpeContextDataElement lookup = new ConditionalDataFactory().getInstance("name", 0, "param");
+			lookup.initialize(null);
+			fail("Expected exception but none occurred");
+		}
+		catch (NxpeException e)
+		{
+			assertEquals(NxpeException.class.getName(), e.getClass().getName());
+			assertEquals("No parameters received upon initialization", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testInitializeSuccess()
+	{
+		try
+		{
+			NxpeContextDataElement lookup = new ConditionalDataFactory().getInstance("name", 0, "param");
+			lookup.initialize(getValidParamsList());
+		}
+		catch (NxpeException e)
+		{
+			fail("Exception: " + e.getMessage());
+		}
+	}
+
+	private ExternalAttributeInformationContext getInformationContext()
+	{
+		NxpeInformationData data = new NxpeInformationData("IdNumber", 20, "176414212", -1);
+		NxpeInformationMap map = new NxpeInformationMap();
+		map.put(new NxpeInformationKey(data), data);
+		ExternalAttributeInformationContext infoCtx = new ExternalAttributeInformationContext();
+		infoCtx.setAttributeName("cakid");
+		try
+		{
+			infoCtx.setContextData(map);
+			infoCtx.setLoggingEnabled(true);
+			infoCtx.setTracingEnabled(true);
+			infoCtx.setAuthenticationId("authid");
+		}
+		catch (NxpeException e)
+		{
+			e.printStackTrace();
+		}
+		return infoCtx;
+	}
+
+	private NxpeParameterList getValidParamsList()
+	{
+		NxpeParameterList list = new nl.idfocus.test.nam.nxpe.TestNxpeParameterList()
+				.addParameter(new nl.idfocus.test.nam.nxpe.TestNxpeParameter("SoapEndpoint", 10, "/Service/CprService.svc"))
+				.addParameter(new nl.idfocus.test.nam.nxpe.TestNxpeParameter("IdNumber", 20, "176414212"));
+		return list;
 	}
 
 }
