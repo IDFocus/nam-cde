@@ -13,6 +13,7 @@
 		<nam.version>4.2.1</nam.version>
 		<servlet.version>3.1.0</servlet.version>
 		<mvn.compiler.version>3.5.1</mvn.compiler.version>
+		<mvn.install.version>2.5.2</mvn.install.version>
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -32,6 +33,13 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>${mvn.install.version}</version>
+				<configuration>
+					<createChecksum>true</createChecksum>
 				</configuration>
 			</plugin>
 		</plugins>
