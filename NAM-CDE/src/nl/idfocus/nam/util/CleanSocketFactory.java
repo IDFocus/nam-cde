@@ -74,5 +74,9 @@ public class CleanSocketFactory extends SSLSocketFactory
 	{
 		return socketFactory.createSocket(ia, i, ia1, i1);
 	}
-
+	@Override
+	public Socket createSocket() throws IOException
+	{
+		return socketFactory.createSocket();
+	}
 }
