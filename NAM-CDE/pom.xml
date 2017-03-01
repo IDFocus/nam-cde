@@ -10,7 +10,7 @@
 		<java.version>1.7</java.version>
 		<junit.version>4.11</junit.version>
 		<wiremock.version>1.58</wiremock.version>
-		<nam.version>4.2.1</nam.version>
+		<nam.version>4.3.0</nam.version>
 		<servlet.version>3.1.0</servlet.version>
 		<mvn.compiler.version>3.5.1</mvn.compiler.version>
 	</properties>
@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>com.novell.nam</groupId>
 			<artifactId>nxpe</artifactId>
-			<version>4.0.1</version>
+			<version>${nam.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
